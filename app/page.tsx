@@ -4,13 +4,18 @@ import { useState } from "react";
 
 export default function Home() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  
+  // استیت‌های پرامپت‌ساز
   const [role, setRole] = useState("");
   const [context, setContext] = useState("");
   const [task, setTask] = useState("");
   const [bans, setBans] = useState("");
   const [generatedPrompt, setGeneratedPrompt] = useState("");
   const [isBuilderCopied, setIsBuilderCopied] = useState(false);
+  
+  // استیت‌های FAQ و جستجو
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCopy = (id: number, text: string) => {
     navigator.clipboard.writeText(text);
@@ -46,8 +51,19 @@ export default function Home() {
       title: "بازنویسی با چارچوب متفاوت",
       desc: "برای تبدیل متن‌های معمولی به متن‌های فروشنده",
       text: "متن زیر را نه ویرایش کن، بلکه از صفر با یک چارچوب روایی متفاوت بازنویسی کن: مشکل ← هزینه بی‌توجهی ← راه‌حل ← اثبات. لحن: قاطع و بدون هایپ. حداکثر ۱۵۰ کلمه."
+    },
+    {
+      id: 3,
+      title: "استخراج داده ساختاریافته",
+      desc: "برای تبدیل متن آزاد به JSON",
+      text: "از متن زیر، نام شرکت، تاریخ، مبلغ و نوع تراکنش را استخراج کن. خروجی را دقیقاً در قالب JSON با کلیدهای company, date, amount, type بده. اگر فیلدی موجود نبود، مقدار null بگذار."
     }
   ];
+
+  // فیلتر کردن پرامپت‌ها بر اساس متن جستجو
+  const filteredPrompts = prompts.filter(p => 
+    p.title.includes(searchQuery) || p.desc.includes(searchQuery) || p.text.includes(searchQuery)
+  );
 
   const faqs = [
     {
@@ -84,7 +100,7 @@ export default function Home() {
       <section className="relative flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
-          نسخه ۲۰۲۶ - تست آپدیت جدید
+          نسخه ۲۰۲۶ - مجهز به جستجو
         </div>
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl">
           از <span className="text-emerald-400">پرسیدن</span> تا <span className="text-emerald-400">ساختن</span>
@@ -165,24 +181,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Prompt Library Section */}
+      {/* Prompt Library Section with SEARCH */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold mb-4 text-center">کتابخانه پرامپت آماده</h2>
-        <div className="flex flex-col gap-6 mt-12">
-          {prompts.map((prompt) => (
-            <div key={prompt.id} className="bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-white mb-2">{prompt.title}</h3>
-                <p className="text-sm text-emerald-400 mb-3">{prompt.desc}</p>
-                <div className="bg-gray-950 p-4 rounded-lg text-gray-300 text-sm leading-relaxed border border-gray-800/50">
-                  {prompt.text}
+        
+        {/* Search Bar */}
+        <div className="max-w-md mx-auto mb-12">
+          <input 
+            type="text" 
+            placeholder="جستجو در پرامپت‌ها (مثلا: بازنویسی)..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-gray-900 border border-gray-700 rounded-full px-6 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors text-center"
+          />
+        </div>
+
+        <div className="flex flex-col gap-6">
+          {filteredPrompts.length > 0 ? (
+            filteredPrompts.map((prompt) => (
+              <div key={prompt.id} className="bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-2">{prompt.title}</h3>
+                  <p className="text-sm text-emerald-400 mb-3">{prompt.desc}</p>
+                  <div className="bg-gray-950 p-4 rounded-lg text-gray-300 text-sm leading-relaxed border border-gray-800/50">
+                    {prompt.text}
+                  </div>
                 </div>
+                <button onClick={() => handleCopy(prompt.id, prompt.text)} className={`shrink-0 py-3 px-6 rounded-lg font-bold transition-all w-full md:w-auto ${copiedId === prompt.id ? "bg-emerald-500 text-gray-950" : "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"}`}>
+                  {copiedId === prompt.id ? "✅ کپی شد!" : "📋 کپی متن"}
+                </button>
               </div>
-              <button onClick={() => handleCopy(prompt.id, prompt.text)} className={`shrink-0 py-3 px-6 rounded-lg font-bold transition-all w-full md:w-auto ${copiedId === prompt.id ? "bg-emerald-500 text-gray-950" : "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"}`}>
-                {copiedId === prompt.id ? "✅ کپی شد!" : "📋 کپی متن"}
-              </button>
+            ))
+          ) : (
+            <div className="text-center text-gray-400 py-10 bg-gray-900 rounded-xl border border-gray-800">
+              پرامپتی با این کلمه پیدا نشد. 😔
             </div>
-          ))}
+          )}
         </div>
       </section>
 
