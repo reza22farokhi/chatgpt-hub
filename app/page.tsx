@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
@@ -12,8 +13,6 @@ export default function Home() {
   const [isBuilderCopied, setIsBuilderCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // استیت جدید برای حالت تاریک/روشن (پیش‌فرض تاریک)
   const [isDark, setIsDark] = useState(true);
 
   const toggleTheme = () => setIsDark(!isDark);
@@ -80,6 +79,100 @@ export default function Home() {
     }
   ];
 
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+
+  return (
+    <main className={`min-h-screen font-sans selection:bg-emerald-500/30 scroll-smooth transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+export default function Home() {
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [role, setRole] = useState("");
+  const [context, setContext] = useState("");
+  const [task, setTask] = useState("");
+  const [bans, setBans] = useState("");
+  const [generatedPrompt, setGeneratedPrompt] = useState("");
+  const [isBuilderCopied, setIsBuilderCopied] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDark, setIsDark] = useState(true);
+
+  const toggleTheme = () => setIsDark(!isDark);
+
+  const handleCopy = (id: number, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleBuilderCopy = () => {
+    if (!generatedPrompt) return;
+    navigator.clipboard.writeText(generatedPrompt);
+    setIsBuilderCopied(true);
+    setTimeout(() => setIsBuilderCopied(false), 2000);
+  };
+
+  const generatePrompt = () => {
+    if (!role && !task) return;
+    const promptText = `<role> ${role || "یک متخصص"} </role>
+<context> ${context || "بدون زمینه خاص"} </context>
+<task> ${task || "وظیفه‌ای مشخص نشده است"} </task>
+<bans> ${bans || "بدون محدودیت خاص"} </bans>`;
+    setGeneratedPrompt(promptText);
+  };
+
+  const prompts = [
+    {
+      id: 1,
+      title: "تحلیل رقابتی چندبعدی",
+      desc: "برای بررسی دقیق رقبا در بازار",
+      text: "تو یک استراتژیست رقابتی هستی. سه رقیب اصلی [نام‌ها] را در ابعاد قیمت‌گذاری، پوزیشنینگ، کانال توزیع و شکاف محصول مقایسه کن. خروجی را در جدول Markdown بده و در پایان سه اقدام عملی پیشنهاد کن."
+    },
+    {
+      id: 2,
+      title: "بازنویسی با چارچوب متفاوت",
+      desc: "برای تبدیل متن‌های معمولی به متن‌های فروشنده",
+      text: "متن زیر را نه ویرایش کن، بلکه از صفر با یک چارچوب روایی متفاوت بازنویسی کن: مشکل ← هزینه بی‌توجهی ← راه‌حل ← اثبات. لحن: قاطع و بدون هایپ. حداکثر ۱۵۰ کلمه."
+    },
+    {
+      id: 3,
+      title: "استخراج داده ساختاریافته",
+      desc: "برای تبدیل متن آزاد به JSON",
+      text: "از متن زیر، نام شرکت، تاریخ، مبلغ و نوع تراکنش را استخراج کن. خروجی را دقیقاً در قالب JSON با کلیدهای company, date, amount, type بده. اگر فیلدی موجود نبود، مقدار null بگذار."
+    }
+  ];
+
+  const filteredPrompts = prompts.filter(p => 
+    p.title.includes(searchQuery) || p.desc.includes(searchQuery) || p.text.includes(searchQuery)
+  );
+
+  const faqs = [
+    {
+      q: "آیا هنوز باید بنویسم «گام‌به‌گام فکر کن»؟",
+      a: "خیر. مدل‌های استدلالی GPT-5 خودشان زنجیره فکر را انجام می‌دهند. به‌جای آن، مسئله را دقیق توصیف کنید و زمینه کامل بدهید."
+    },
+    {
+      q: "تفاوت Custom Instructions و پرامپت چت چیست؟",
+      a: "Custom Instructions برای ترجیحات پایدار (نقش، لحن، فرمت) است؛ پرامپت چت برای وظیفه مشخص پیش رو."
+    },
+    {
+      q: "چرا از تگ‌های XML در پرامپت استفاده کنیم؟",
+      a: "مدل‌های زبانی به ساختار حساس هستند. تگ‌هایی مثل <role> و <task> به مدل کمک می‌کنند تا بخش‌های مختلف دستور را از هم تفکیک کند."
+    }
+  ];
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+
   return (
     <main className={`min-h-screen font-sans selection:bg-emerald-500/30 scroll-smooth transition-colors duration-300 ${isDark ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-900'}`}>
       
@@ -90,16 +183,14 @@ export default function Home() {
           
           <div className="flex items-center gap-6">
             <div className={`hidden md:flex gap-6 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-              <a href="#frameworks" className="hover:text-emerald-500 transition-colors">فریم‌ورک‌ها</a>
+              <a href="#article" className="hover:text-emerald-500 transition-colors">مقاله ویژه</a>
               <a href="#builder" className="hover:text-emerald-500 transition-colors">پرامپت‌ساز</a>
               <a href="#faq" className="hover:text-emerald-500 transition-colors">سوالات</a>
             </div>
             
-            {/* Theme Toggle Button */}
             <button 
               onClick={toggleTheme}
               className={`p-2 rounded-full transition-colors ${isDark ? 'bg-gray-800 hover:bg-gray-700 text-yellow-400' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
-              aria-label="تغییر تم"
             >
               {isDark ? "☀️" : "🌙"}
             </button>
@@ -110,45 +201,89 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className={`inline-block mb-4 px-4 py-1.5 rounded-full border text-sm font-medium ${isDark ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-emerald-500/30 bg-emerald-50 text-emerald-600'}`}>
-          نسخه ۲۰۲۶ - مجهز به تغییر تم
-        </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl">
-          از <span className="text-emerald-500">پرسیدن</span> تا <span className="text-emerald-500">ساختن</span>
-        </h1>
-        <p className={`text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-          ChatGPT فقط یک چت‌بات نیست. یک سیستم‌عامل برای کار است. 
-          تکنیک‌هایی که خروجی را از "پاسخ عمومی" به "تحویل‌دادنی" تبدیل می‌کنند.
-        </p>
+        
+        <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex flex-col items-center">
+          <div className={`inline-block mb-4 px-4 py-1.5 rounded-full border text-sm font-medium ${isDark ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-emerald-500/30 bg-emerald-50 text-emerald-600'}`}>
+            نسخه ۲۰۲۶ - مجهز به مقالات تخصصی
+          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl">
+            از <span className="text-emerald-500">پرسیدن</span> تا <span className="text-emerald-500">ساختن</span>
+          </h1>
+          <p className={`text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            ChatGPT فقط یک چت‌بات نیست. یک سیستم‌عامل برای کار است. 
+            تکنیک‌هایی که خروجی را از "پاسخ عمومی" به "تحویل‌دادنی" تبدیل می‌کنند.
+          </p>
+        </motion.div>
       </section>
 
-      {/* Frameworks Section */}
-      <section id="frameworks" className={`py-20 px-6 max-w-6xl mx-auto border-t ${isDark ? 'border-gray-900' : 'border-gray-200'}`}>
-        <h2 className={`text-3xl font-bold mb-12 text-center pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'}`}>فریم‌ورک‌های حرفه‌ای</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className={`border rounded-2xl p-8 ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200 shadow-sm'}`}>
-            <h3 className="text-xl font-bold text-emerald-500 mb-4">فریم‌ورک ۴ عنصری GPT-5</h3>
-            <ul className={`space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              <li>🎯 <strong>هدف:</strong> دقیقا چه چیزی می‌خواهید؟</li>
-              <li>🌍 <strong>زمینه:</strong> مخاطب و شرایط چیست؟</li>
-              <li>📦 <strong>خروجی:</strong> فرمت نهایی چگونه باشد؟</li>
-              <li>🚫 <strong>مرزها:</strong> چه کارهایی نباید بکند؟</li>
-            </ul>
+      {/* Article Section */}
+      <motion.section 
+        id="article" 
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUp}
+        className={`py-20 px-6 max-w-4xl mx-auto border-t ${isDark ? 'border-gray-900' : 'border-gray-200'}`}
+      >
+        <div className={`border rounded-2xl p-8 md:p-12 shadow-xl ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'}`}>
+          
+          <div className="mb-8 text-center">
+            <span className="text-emerald-500 font-bold tracking-wider text-sm mb-2 block">مقاله تخصصی</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">مهندسی پرامپت پیشرفته: از تئوری تا عمل</h2>
+            <div className={`flex justify-center items-center gap-4 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <span>نویسنده: تیم ChatGPT Hub</span>
+              <span>•</span>
+              <span>زمان مطالعه: ۵ دقیقه</span>
+            </div>
           </div>
-          <div className={`border rounded-2xl p-8 ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200 shadow-sm'}`}>
-            <h3 className="text-xl font-bold text-emerald-500 mb-4">تگ‌های براکتی (XML)</h3>
-            <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>از تگ‌ها برای جداسازی منطق استفاده کنید.</p>
-            <pre className={`p-4 rounded-lg text-sm text-emerald-500 direction-ltr text-left overflow-x-auto ${isDark ? 'bg-gray-950' : 'bg-gray-100'}`}>
-{`<role> کپی‌رایتر </role>
-<context> خدمات کود آلی </context>
-<task> یک هوک ۳ جمله‌ای بنویس </task>`}
-            </pre>
+
+          <div className={`space-y-6 leading-loose ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+            <p>
+              اکثر کاربران از ChatGPT به عنوان یک موتور جستجوی ساده استفاده می‌کنند. اما مدل‌های زبانی بزرگ (LLMs) فراتر از این هستند. برای دریافت خروجی در سطح کارشناسی، باید از «دستور دادن» به سمت <strong>«مهندسی کردن»</strong> حرکت کنید. در این مقاله، سه تکنیک کلیدی که تفاوت را ایجاد می‌کنند را بررسی می‌کنیم.
+            </p>
+
+            <h3 className="text-2xl font-bold text-emerald-500 mt-8 mb-4">۱. زنجیره تفکر (Chain of Thought)</h3>
+            <p>
+              وقتی از مدل می‌خواهید یک مسئله پیچیده (مثل تحلیل یک داده مالی) را حل کند، اگر فقط پاسخ نهایی را بخواهید، ممکن است مدل دچار توهم (Hallucination) شود. راه‌حل؟ از مدل بخواهید <strong>مسیر استدلال</strong> خود را بنویسد. 
+            </p>
+            <div className={`p-4 rounded-lg text-sm font-mono direction-ltr text-left border-l-4 border-emerald-500 ${isDark ? 'bg-gray-950 text-gray-300' : 'bg-gray-100 text-gray-800'}`}>
+              "Before providing the final answer, break down your reasoning step-by-step. Analyze the data first, then draw conclusions."
+            </div>
+            <p>
+              این کار باعث می‌شود مدل قبل از پاسخ دادن، «فکر» کند و دقت خروجی به شدت بالا برود.
+            </p>
+
+            <h3 className="text-2xl font-bold text-emerald-500 mt-8 mb-4">۲. پرامپت‌نویسی چندشات (Few-Shot Prompting)</h3>
+            <p>
+              مدل‌های هوش مصنوعی شاگردان بسیار باهوشی هستند که از «الگو» یاد می‌گیرند. اگر از آن‌ها می‌خواهید یک متن را به سبک خاصی بنویسند، فقط توضیح دادن کافی نیست؛ <strong>باید نمونه بدهید</strong>.
+            </p>
+            <ul className={`list-disc list-inside space-y-2 ml-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <li>ورودی نمونه ۱ ← خروجی مدنظر ۱</li>
+              <li>ورودی نمونه ۲ ← خروجی مدنظر ۲</li>
+              <li>ورودی واقعی شما ← (مدل الگو را ادامه می‌دهد)</li>
+            </ul>
+            <p>
+              این تکنیک ساده، بهترین راه برای کنترل لحن (Tone) و فرمت خروجی است.
+            </p>
+
+            <h3 className="text-2xl font-bold text-emerald-500 mt-8 mb-4">۳. جداسازی نقش‌ها با تگ‌های XML</h3>
+            <p>
+              وقتی پرامپت شما طولانی می‌شود، مدل ممکن است بین دستورات (Task) و زمینه (Context) سردرگم شود. بهترین راه‌حل، استفاده از ساختار است. همانطور که در بخش «پرامپت‌ساز» این سایت دیدید، استفاده از تگ‌هایی مانند <code>&lt;role&gt;</code> و <code>&lt;task&gt;</code> به مدل یک نقشه راه شفاف می‌دهد و احتمال خطا را به حداقل می‌رساند.
+            </p>
+
+            <div className={`mt-8 p-6 rounded-xl border ${isDark ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-50 border-emerald-100'}`}>
+              <h4 className="font-bold text-lg text-emerald-500 mb-2">جمع‌بندی</h4>
+              <p className="text-sm">
+                هوش مصنوعی جایگزین متخصصین نمی‌شود، اما متخصصینی که از هوش مصنوعی استفاده می‌کنند، جایگزین کسانی می‌شوند که استفاده نمی‌کنند. با ترکیب زنجیره تفکر، نمونه‌دهی و ساختاردهی XML، شما نه یک «کاربر عادی»، بلکه یک «معمار پرامپت» خواهید بود.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Prompt Builder Section */}
-      <section id="builder" className={`py-20 px-6 ${isDark ? 'bg-gray-900/30' : 'bg-gray-100'}`}>
+      <motion.section 
+        id="builder" 
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUp}
+        className={`py-20 px-6 ${isDark ? 'bg-gray-900/30' : 'bg-gray-100'}`}
+      >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-center">پرامپت‌ساز تعاملی</h2>
           <p className={`text-center mb-12 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>اجزای پرامپت خود را وارد کنید تا یک دستور ساختاریافته دریافت کنید.</p>
@@ -190,10 +325,13 @@ export default function Home() {
             )}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Prompt Library Section */}
-      <section className="py-20 px-6 max-w-6xl mx-auto">
+      <motion.section 
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUp}
+        className="py-20 px-6 max-w-6xl mx-auto"
+      >
         <h2 className="text-3xl font-bold mb-4 text-center">کتابخانه پرامپت آماده</h2>
         
         <div className="max-w-md mx-auto mb-12">
@@ -228,10 +366,14 @@ export default function Home() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* FAQ Section */}
-      <section id="faq" className={`py-20 px-6 max-w-4xl mx-auto border-t ${isDark ? 'border-gray-900' : 'border-gray-200'}`}>
+      <motion.section 
+        id="faq" 
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUp}
+        className={`py-20 px-6 max-w-4xl mx-auto border-t ${isDark ? 'border-gray-900' : 'border-gray-200'}`}
+      >
         <h2 className="text-3xl font-bold mb-12 text-center">سوالات متداول</h2>
         <div className="space-y-4">
           {faqs.map((faq, index) => (
@@ -251,7 +393,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className={`py-8 text-center border-t ${isDark ? 'text-gray-500 border-gray-800' : 'text-gray-500 border-gray-200'}`}>
