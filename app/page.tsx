@@ -84,7 +84,7 @@ export default function Home() {
       <section className="relative flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium">
-          نسخه ۲۰۲۶ - آپدیت شده
+          نسخه ۲۰۲۶ - تست آپدیت جدید
         </div>
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl">
           از <span className="text-emerald-400">پرسیدن</span> تا <span className="text-emerald-400">ساختن</span>
