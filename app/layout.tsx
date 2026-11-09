@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 
@@ -10,6 +10,16 @@ const vazirmatn = Vazirmatn({
 export const metadata: Metadata = {
   title: "ChatGPT Mastery Hub | مرجع ترفندهای ChatGPT",
   description: "سایت فوق حرفه‌ای آموزش ترفندها و پرامپت‌های ChatGPT",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ChatGPT Hub",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#030712",
 };
 
 export default function RootLayout({
